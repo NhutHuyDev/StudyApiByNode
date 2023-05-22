@@ -1,5 +1,5 @@
 {
-  "name": "studyapinode",
+  "name": "studyapibynode",
   "version": "1.0.0",
   "description": "study about writing API by NodeJs",
   "main": "index.js",
@@ -12,9 +12,12 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "mysql2": "^3.3.1",
+    "sequelize": "^6.31.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
-  }
+    "nodemon": "^2.0.22",
+    "sequelize-cli": "^6.6.0"
+  } 
 }
