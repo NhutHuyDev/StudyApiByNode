@@ -19,7 +19,8 @@ module.exports = {
         type: Sequelize.STRING
       },
       role_code: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        defaultValue: 'R3'
       },
       avatar: {
         type: Sequelize.STRING

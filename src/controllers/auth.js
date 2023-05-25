@@ -1,21 +1,30 @@
-const services = require('../services')
+const AuthServices = require('../services/auth')
+const AuthServicesInstance = new AuthServices()
 
-const register = async (req, res) => {
+const { internalServerError } = require('../middlewares/handleErrors')
+
+const asyncErrorHandler = require('../utils/asyncErrorHandler')
+
+const register = asyncErrorHandler(async (req, res) => {
+    const { role_code, name, avatar, email, password } = req.body
+
+    const response = await AuthServicesInstance.register({ role_code, name, avatar, email, password })
+
+    res.json(response)
+
+})
+
+const login = async (req, res) => {
+    const { email, password } = req.body
+
     try {
-        const response = await services.register()
-
-        return res.status(200).json({
-            response,
-            message: 'Register successfully'
-        })
+        const response = await services.login({ email, password })
+        return res.json(response)
     } catch (error) {
-        return res.status(500).json({
-            err: -1,
-            message: 'Internal Server Error'
-        })
+        return internalServerError(req, res)
     }
 }
 
 module.exports = {
-    register
+    register, login
 }

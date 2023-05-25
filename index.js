@@ -20,6 +20,7 @@ initRoutes(app)
 const PORT = process.env.PORT || 8888
 
 const listener = app.listen(PORT, () => {
-    console.log('Server is running on the port ' + listener.address().port)
+    console.log('Server is running on the port ' + listener.address().port + '\n' +  
+                'http://localhost:' + listener.address().port)
 })
 
