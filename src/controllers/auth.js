@@ -1,29 +1,30 @@
 const AuthServices = require('../services/auth')
 const AuthServicesInstance = new AuthServices()
 
-const { internalServerError } = require('../middlewares/handleErrors')
-
 const asyncErrorHandler = require('../utils/asyncErrorHandler')
 
-const register = asyncErrorHandler(async (req, res) => {
-    const { role_code, name, avatar, email, password } = req.body
+const joi = require('joi')
+const { email, password } = require('../helpers/joiSchema')
+const APIError = require('../utils/APIError')
 
-    const response = await AuthServicesInstance.register({ role_code, name, avatar, email, password })
+const register = asyncErrorHandler(async (req, res) => {
+    const { error } = joi.object({ email, password }).validate(req.body, { allowUnknown: true })
+
+    if (error) {
+        throw new APIError(error.message, 404, 'RegisterException')
+    }
+
+    const response = await AuthServicesInstance.register(req.body)
 
     res.json(response)
 
 })
 
-const login = async (req, res) => {
-    const { email, password } = req.body
+const login = asyncErrorHandler(async (req, res) => {
+    const response = await AuthServicesInstance.login(req.body)
 
-    try {
-        const response = await services.login({ email, password })
-        return res.json(response)
-    } catch (error) {
-        return internalServerError(req, res)
-    }
-}
+    return res.json(response)
+})
 
 module.exports = {
     register, login

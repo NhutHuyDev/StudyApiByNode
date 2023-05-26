@@ -49,62 +49,50 @@ class AuthServices {
             }
         })
     }
-}
 
-// const register = ({ role_code, name, avatar, email, password }) =>
+    login({ email, password }) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const user = await db.User.findOne({
+                    where: { email },
+                });
 
-const login = ({ email, password }) => new Promise(async (resolve, reject) => {
-    try {
-        const user = await db.User.findOne({
-            where: { email },
-        });
-
-        if (user) {
-            if (comparePassword(password, user.password)) {
-                resolve({
-                    code: 200,
-                    status: "success",
-                    message: "Login Successfully",
-                    data: {
-                        user: {
-                            id: user.id,
-                            name: user.name,
-                            email: user.email,
-                            role_code: user.role_code,
-                            avatar: user.avatar
-                        },
-                        authToken: createToken({
-                            id: user.id,
-                            email: user.email,
-                            role_code: user.role_code
-                        }, process.env.JWT_SECRET_TOKEN)
+                if (user) {
+                    if (comparePassword(password, user.password)) {
+                        resolve({
+                            code: 200,
+                            status: "success",
+                            message: "login successfully",
+                            data: {
+                                user: {
+                                    id: user.id,
+                                    name: user.name,
+                                    email: user.email,
+                                    role_code: user.role_code,
+                                    avatar: user.avatar
+                                },
+                                authToken: createToken({
+                                    id: user.id,
+                                    email: user.email,
+                                    role_code: user.role_code
+                                }, process.env.JWT_SECRET_TOKEN)
+                            }
+                        })
+                    } else {
+                        throw new APIError("email or password is incorrect", 400, "InvalidAuthentication")
                     }
-                })
-            } else {
-                resolve({
-                    code: 400,
-                    status: "error",
-                    message: "email or password is incorrect",
-                    data: "InvalidAuthentication"
-                })
+                } else {
+                    throw new APIError("email or password is incorrect", 400, "InvalidAuthentication")
+                }
+            } catch (error) {
+                reject(error)
             }
-        } else {
-            resolve({
-                code: 400,
-                status: "error",
-                message: "email or password is incorrect",
-                data: 'LoginException'
-            })
-        }
-    } catch (error) {
-        reject({
-            code: 500,
-            status: "fail",
-            message: "Internal Server Error",
-            data: 'LoginException'
         })
     }
-})
+
+}
+
+
 
 
 module.exports = AuthServices
